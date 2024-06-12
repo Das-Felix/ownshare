@@ -59,4 +59,10 @@ mkdir -p "${build_dir}/api"
 echo "${config_php_content}" > "${config_php_path}"
 echo "Set ${config_php_path} to provided database and URL configuration"
 
+echo "setting permissions"
+chown -R www-data:www-data /var/www/html
+chmod -R 755 /var/www/html
+chown -R www-data:www-data /var/www/html/api
+chmod -R 775 /var/www/html/api
+
 exec apache2-foreground
