@@ -111,6 +111,7 @@
 
         console.log("upload finished!");
         dispatch("uploadFinished", {});
+        showUploadModal = false;
     }
 
     function truncate(str, n){
@@ -146,6 +147,12 @@
         uploadingView = false;        
     }
 
+    $: {
+        if(showUploadModal == true) {
+            reset();
+        }
+    }
+
 
     export let showUploadModal = false;
 </script>
@@ -155,9 +162,9 @@
 
     <span class="text-red-300">{error}</span>
 
-    <div class="flex gap-8">
+    <div class="flex gap-8 upload-view">
         {#if uploadingView}
-            <div class="flex flex-col gap-2">
+            <div class="flex flex-col gap-2 max-h-full overflow-y-scroll">
                 {#if files != null}
                     {#each files as file, index}
                         <div class="p-4 border-solid border-2 border-base-300 rounded-lg">
@@ -174,7 +181,7 @@
                 {/if}
             </div>
         {:else}
-            <div class="flex flex-col">
+            <div class="flex flex-col max-h-full overflow-y-scroll">
                 <input type="file" id="upload" multiple hidden on:change={handleFileChange}/>
                 <label for="upload" class="btn btn-outline mb-4 min-w-72 flex-grow w-full">
                     <span>choose files</span>
@@ -227,3 +234,9 @@
         </div>
     </div>
 </Modal>
+
+<style>
+    .upload-view {
+        max-height: 70vh;
+    }
+</style>

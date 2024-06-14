@@ -31,23 +31,25 @@
                     </p>
                 </header>
 
-                {{#each collection.files }}
-                    <a class="file" href="{{url}}">
-                        <section>
-                            <span class="index">{{index}}</span>
-                            <span class="filename">{{name}}</span>
-                        </section>
+                <div class="files-wrapper">
+                    {{#each collection.files }}
+                        <a class="file" href="{{url}}">
+                            <section>
+                                <span class="index">{{index}}</span>
+                                <span class="filename">{{name}}</span>
+                            </section>
 
-                        <section>
-                            <span class="filesize">{{formatedSize}}</span>
-                            <span class="download-icon">
-                                <img src="./theme/icon.svg" alt="">
-                            </span>
-                        </section>  
-                    </a>
+                            <section>
+                                <span class="filesize">{{formatedSize}}</span>
+                                <span class="download-icon">
+                                    <img src="./theme/icon.svg" alt="">
+                                </span>
+                            </section>  
+                        </a>
 
-                    <hr>
-                {{/each}}
+                        <hr>
+                    {{/each}}
+                </div>
 
                 <a class="button" href="{{collection.zipUrl}}">Download all</a>
             {{/if}}
