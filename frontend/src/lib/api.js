@@ -10,7 +10,7 @@ export async function getOption(option) {
     const cfg = await getConfig();
     const backendAddress = cfg.backendAddress;
 
-    let response = await fetch(backendAddress + "/admin/options/getOption.php/?option=" + option, {
+    let response = await fetch(backendAddress + "/admin/options/getOption.php?option=" + option, {
         method: "GET",
         credentials: "include",
     });
