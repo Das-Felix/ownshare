@@ -11,27 +11,39 @@
     
 
     onMount(async () => {
-        let response = await fetch(base + "/theme/template.html");
+        const cfg = await getConfig();
+        const theme = await getCurrentTheme(cfg);
+
+        //Theme CSS
+        let link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.type = "text/css";
+        link.href = `api/themes/${theme}/theme.css`;
+        document.getElementsByTagName("head")[0].appendChild(link);
+
+        //Theme HTML
+        let response = await fetch(`api/themes/${theme}/template.html`);
         let templateHTML = await response.text();
         let template = Handlebars.compile(templateHTML);
 
         let collectionId = $page.url.searchParams.get("q");
-        await fetchCollection(collectionId, "");
+        await fetchCollection(collectionId, "", cfg);
         html = template({ collection });
 
         document.addEventListener("collectionPasswordEntered", async (event) => {
             let password = document.querySelector('[name="collection_password"]').value
-            await fetchCollection(collectionId, password);
+            await fetchCollection(collectionId, password, cfg);
             html = template({ collection });
             
         });
     });
 
-    async function fetchCollection(collectionId, collectionPassword) {
-        const cfg = await getConfig();
+    async function fetchCollection(collectionId, collectionPassword, cfg) {
         let backendAddress = cfg.backendAddress;
 
         collection = await fetchFileCollection(collectionId, collectionPassword);
+
+        console.log(collection)
 
         if(!collection.error) {
             for(let i = 0; i < collection.files.length; i++) {
@@ -49,6 +61,14 @@
         }
     }
 
+    async function getCurrentTheme(cfg) {
+        let backendAddress = cfg.backendAddress;
+
+        let response = await fetch(backendAddress + "/public/getCurrentTheme.php");
+        let json = await response.json();
+        return json.currentTheme;
+    }
+
     function formatBytes(bytes) {
         if (bytes === 0) return '0 Bytes';
         const k = 1024;
@@ -59,7 +79,6 @@
 
 </script>
 
-<link rel="stylesheet" href="{base}/theme/style.css">
 {@html html }
 
 <!-- <div class="w-full h-screen flex items-center justify-center bg-base-300">

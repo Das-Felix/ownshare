@@ -6,6 +6,9 @@ export async function getConfig() {
     return result;
 }
 
+
+// OPTIONS
+
 export async function getOption(option) {
     const cfg = await getConfig();
     const backendAddress = cfg.backendAddress;
@@ -47,6 +50,11 @@ export async function setOption(name, value) {
     }
 }
 
+
+
+
+// FILE COLLECTION MANAGEMENT
+
 export async function fetchFileCollection(id, password) {
     const cfg = await getConfig();
     const backendAddress = cfg.backendAddress;
@@ -55,7 +63,7 @@ export async function fetchFileCollection(id, password) {
         password = "";
     }
 
-    let result = await fetch(backendAddress + "/getCollection.php?collectionId=" + id + "&password=" + password, {
+    let result = await fetch(backendAddress + "/public/getCollection.php?collectionId=" + id + "&password=" + password, {
         method: "GET",
         credentials: "include",
     });
@@ -64,14 +72,14 @@ export async function fetchFileCollection(id, password) {
     return collections;
 }
 
-export async function fetchFileCollections(sortField, sortDir) {
+export async function fetchFileCollections(sortField, sortDir, page, perPage) {
     const cfg = await getConfig();
     const backendAddress = cfg.backendAddress;
 
     if(sortField == null) sortField = "id";
     if(sortDir == null) sortDir = "ASC";
 
-    let result = await fetch(backendAddress + "/admin/files/getCollections.php?sortField=" + sortField + "&sortDir=" + sortDir, {
+    let result = await fetch(backendAddress + "/admin/files/getCollections.php?sortField=" + sortField + "&sortDir=" + sortDir + "&page=" + page + "&perPage=" + perPage, {
         method: "GET",
         credentials: "include"
     });
@@ -96,6 +104,11 @@ export async function deleteFileCollections(id) {
     let result = await response.json();
     return result;
 }
+
+
+
+
+// USER MANAGEMENT
 
 export async function fetchUsers() {
     const cfg = await getConfig();
@@ -148,3 +161,7 @@ export async function deleteUser(id) {
     console.log(result);
     return JSON.parse(result);
 } 
+
+
+
+// Theme

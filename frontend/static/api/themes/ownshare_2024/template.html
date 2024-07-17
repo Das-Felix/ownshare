@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ collection.title }}</title>
+</head>
+<body>
+    <main>
+        <div class="download-card">
+
+            {{#if collection.error}}
+                {{#if collection.password_prompt }}
+                    <h1>This collection is locked!</h1>
+
+                    {{#if collection.wrong_password }}
+                        <span class="error">Wrong password!</span>
+                    {{/if}}
+
+                    <input class="input" placeholder="password" name="collection_password" type="password" autocomplete="off" value="">
+                    <button class="button" onclick="document.dispatchEvent(new Event('collectionPasswordEntered'))">Unlock</button>
+                {{else}}
+                    {{ collection.error }}
+                {{/if}}
+            {{else}}
+                <header>
+                    <h1>{{ collection.title }}</h1>
+
+                    <p class="comment">
+                        {{ collection.comment  }}
+                    </p>
+                </header>
+
+                <div class="files-wrapper">
+                    {{#each collection.files }}
+                        <a class="file" href="{{url}}">
+                            <section>
+                                <span class="index">{{index}}</span>
+                                <span class="filename">{{name}}</span>
+                            </section>
+
+                            <section>
+                                <span class="filesize">{{formatedSize}}</span>
+                                <span class="download-icon">
+                                    <img src="./theme/icon.svg" alt="">
+                                </span>
+                            </section>  
+                        </a>
+
+                        <hr>
+                    {{/each}}
+                </div>
+
+                <a class="button" href="{{collection.zipUrl}}">Download all</a>
+            {{/if}}
+        </div>
+    </main>
+</body>
+</html>

@@ -17,6 +17,8 @@ You can customize the look of your download page by editing the template.html an
 ## Installation
 There are multiple ways of installing OwnShare. When Installed correctly, before using your app you have to go to /api/installer.php. This will create all the database tables and a default admin user. You will find more info on that page.
 
+INFO: To my knowledge SvelteKit currently doesn't support loading assets from a relative path when using the static adapter! If you need to install OwnShare in a subfolder you need to adjust the **base** setting in the svelte.config.js, and then build the app from the sourcecode.
+
 ## Install from Release
 
 Requirements: PHP Environment, MySQL Database

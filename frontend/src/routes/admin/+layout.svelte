@@ -22,9 +22,11 @@
 
         if(result.error) {
             goto(base + "/auth/login");
-        } else {
-            console.log("valid session!");
         } 
+        
+        // else if(result.role == null || result.role != "admin") {
+        //     goto(base + "/");
+        // }
     }
 
     onMount(() => {

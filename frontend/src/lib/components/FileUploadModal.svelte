@@ -4,12 +4,13 @@
     import { getOption, setOption } from "$lib/api.js";
     import { createEventDispatcher } from 'svelte';
     import { getConfig } from "$lib/api.js";
+    import { base } from '$app/paths'
 
     const dispatch = createEventDispatcher();
 
     let files = [];
     let error = "";
-    let uploadingView = false;
+    let currentView = "CHOOSE_FILES";
 
     let chunkSize = 0;
 
@@ -20,6 +21,9 @@
     let password = "";
     let maxDownloads = "";
     let saveDuration = "";
+
+    //Collection Info
+    let collectionInfo = "";
 
     function handleFileChange(event) {
         const selectedFiles = Array.from(event.target.files);
@@ -34,12 +38,15 @@
         for(let i = 0; i < files.length; i++) {
             files[i].neededChunks = Math.ceil(files[i].size / chunkSize);
             files[i].progress = 0;
+            files[i].lastChunkTime = 0;
+            console.log(files[i].neededChunks)
         }
     
-        uploadingView = true;
+        currentView = "UPLOADING";
         let sessionData = await createUploadSession(cfg);
         await uploadFiles(sessionData.collection_id, cfg);
         await finishUpload(sessionData.collection_id, cfg);
+        collectionInfo = sessionData;
     }
 
     async function uploadFiles(sessionId, cfg) {
@@ -72,6 +79,7 @@
         const backendAddress = cfg.backendAddress;
         let file = files[fileIndex];
         for (let start = 0; start < file.size; start += chunkSize) {
+            const startTime = Date.now();
             const chunk = file.slice(start, start + chunkSize)
             const fd = new FormData();
             fd.set('data', chunk);
@@ -85,9 +93,14 @@
                 body: fd
             });
 
+            //TODO: proper time estimation
+            const secSpent = (Date.now() - startTime) / 1000;
             files[fileIndex].progress = start/chunkSize + 1;
+            files[fileIndex].timeEst = (files[fileIndex].neededChunks - files[fileIndex].progress) * secSpent;
+
             let result = await response.json();
-            console.log(result.message);
+
+            console.log(result)
         }
 
     }
@@ -111,7 +124,7 @@
 
         console.log("upload finished!");
         dispatch("uploadFinished", {});
-        showUploadModal = false;
+        currentView = "FINISHED";
     }
 
     function truncate(str, n){
@@ -144,7 +157,7 @@
         password = "";
         maxDownloads = "";
         saveDuration = "";
-        uploadingView = false;        
+        currentView = "CHOOSE_FILES";        
     }
 
     $: {
@@ -162,31 +175,47 @@
 
     <span class="text-red-300">{error}</span>
 
-    <div class="flex gap-8 upload-view">
-        {#if uploadingView}
-            <div class="flex flex-col gap-2 max-h-full overflow-y-scroll">
-                {#if files != null}
-                    {#each files as file, index}
-                        <div class="p-4 border-solid border-2 border-base-300 rounded-lg">
-                            <div class="flex items-center justify-between gap-2">
-                                <span>{truncate(file.name, 25)}</span>
-                                <div class="flex gap-1">
-                                    <span class="text-neutral-400">{formatBytes(file.size)}</span>
-                                </div>
-                            </div>
+    <div class="views overflow-hidden h-full relative">
 
-                            <progress class="progress w-full" value="{file.progress}" max="{file.neededChunks}"></progress>
-                        </div>
-                    {/each}
-                {/if}
+        <!-- FINISHED -->
+        {#if currentView == "FINISHED"}
+            <div class="flex gap-8 h-ful absolute top-0 left-0 w-full h-full z-10 items-center justify-center">
+               <h3 class="font-bold text-4xl">Upload Finished</h3>
             </div>
-        {:else}
+        {/if}
+
+        <!-- UPLOADING -->
+        {#if currentView == "UPLOADING"}
+            <div class="flex gap-8 h-ful absolute top-0 left-0 w-full h-full z-10">
+                <div class="flex flex-col gap-2 max-h-full overflow-y-scroll w-full">
+                    {#if files != null}
+                        {#each files as file, index}
+                            <div class="p-4 border-solid border-2 border-base-300 rounded-lg">
+                                <div class="flex items-center justify-between gap-2">
+                                    <span>{truncate(file.name, 25)}</span>
+                                    <div class="flex gap-1">
+                                        <span class="text-neutral-400">{formatBytes(file.size)}</span>
+                                        <!-- <span class="text-neutral-400">{(file.timeEst / 60).toFixed(0)}</span> -->
+                                    </div>
+                                </div>
+
+                                <progress class="progress w-full" value="{file.progress}" max="{file.neededChunks}"></progress>
+                            </div>
+                        {/each}
+                    {/if}
+                </div>
+            </div>
+        {/if}
+
+        <!-- CHOOSE_FILES -->
+
+        <div class="flex gap-8 upload-view h-full {currentView == 'CHOOSE_FILES' ? '' : 'opacity-0'}">
             <div class="flex flex-col max-h-full overflow-y-scroll">
                 <input type="file" id="upload" multiple hidden on:change={handleFileChange}/>
                 <label for="upload" class="btn btn-outline mb-4 min-w-72 flex-grow w-full">
                     <span>choose files</span>
                 </label> 
-        
+
                 <div class="flex flex-col gap-2">
                     {#if files != null}
                         {#each files as file, index}
@@ -203,39 +232,38 @@
                     {/if}
                 </div>
             </div>
-        {/if}
-    
-        <div class="flex flex-col gap-2 w-96">
-            <label class="form-control w-full">
-                <input type="text" placeholder="Title" class="input input-bordered w-full" bind:value={title}/>
-            </label>
-    
-            <textarea class="textarea textarea-bordered resize-none" placeholder="Comment" bind:value={comment}></textarea>
-    
-            <label class="input input-bordered flex items-center gap-2">
-                <input type="text" class="grow" placeholder="Password" bind:value={password}/>
-            </label>
-            
-            <label class="input input-bordered flex items-center gap-2">
-                <input type="number" min="1" class="grow" placeholder="Max. downloads" bind:value={maxDownloads}/>
-            </label>
-    
-            <label class="input input-bordered flex items-center gap-2">
-                <input type="number" min="1" class="grow" placeholder="Save duration" bind:value={saveDuration}/>
-            </label>
-    
-            <!-- <select class="select select-bordered w-full">
-                <option disabled selected>Save to</option>
-                <option disabled>Database</option>
-                <option>Folder</option>
-            </select>     -->
-    
-            <button class="btn btn-primary" on:click={startUpload}>Upload</button>
+
+        
+            <div class="flex flex-col gap-2 w-96">
+                <label class="form-control w-full">
+                    <input type="text" placeholder="Title" class="input input-bordered w-full" bind:value={title}/>
+                </label>
+        
+                <textarea class="textarea textarea-bordered resize-none" placeholder="Comment" bind:value={comment}></textarea>
+        
+                <label class="input input-bordered flex items-center gap-2">
+                    <input type="text" class="grow" placeholder="Password" bind:value={password}/>
+                </label>
+                
+                <label class="input input-bordered flex items-center gap-2">
+                    <input type="number" min="1" class="grow" placeholder="Max. downloads" bind:value={maxDownloads}/>
+                </label>
+        
+                <label class="input input-bordered flex items-center gap-2">
+                    <input type="number" min="1" class="grow" placeholder="Save duration" bind:value={saveDuration}/>
+                </label>
+        
+                <button class="btn btn-primary" on:click={startUpload}>Upload</button>
+            </div>
         </div>
-    </div>
+    </div>  
 </Modal>
 
 <style>
+
+    .views {
+    }
+
     .upload-view {
         max-height: 70vh;
     }

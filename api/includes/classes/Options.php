@@ -48,6 +48,8 @@ class Options {
         $this->setOptionIfNotExists("files_default_max_downloads", "100");
         $this->setOptionIfNotExists("files_id_length", "8");
         $this->setOptionIfNotExists("files_upload_chunk_size", "40000");
+
+        $this->setOptionIfNotExists("themes_current_theme", "ownshare_2024");
     }
 
 }

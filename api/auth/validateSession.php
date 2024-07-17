@@ -20,6 +20,8 @@ if($user == null) {
     exit();
 }
 
-echo '{"message": "valid session"}';
+$json_user = json_encode($user);
+
+echo $json_user;
 
 exit();

@@ -8,6 +8,7 @@
     
     let showUploadModal = false;
     let loading = true;
+    let pageError = null;
 
     let tableCategorys = [
         {title: "Name", field: "title"}, 
@@ -20,9 +21,13 @@
     ]
 
     let tableSort = {
-        category: "Name",
-        dir: "ASC"
+        category: "uploaded_at",
+        dir: "DESC"
     }
+
+    let tablePage = 1;
+    let tablePagesTotal = 1;
+    let filesPerPage = 10;
 
     function formatBytes(bytes) {
         if (bytes === 0) return '0 Bytes';
@@ -38,30 +43,39 @@
     }
 
     async function changeSort(category) {
-        if(tableSort.category == category.title) {
+        if(tableSort.category == category.field) {
             tableSort.dir = tableSort.dir == "ASC" ? "DESC" : "ASC";
         } else {
-            tableSort.category = category.title;
+            tableSort.category = category.field;
             tableSort.dir = "DESC";
         }
 
 
-        fileCollections = await fetchFileCollections(category.field, tableSort.dir);
+       await fetchTableData();
     }
 
     onMount(async () => {
-        fileCollections = await fetchFileCollections();
+        await fetchTableData();
+    });
 
-        console.log(fileCollections)
+    async function fetchTableData() {
+        loading = true;
+        let collections = await fetchFileCollections(tableSort.category, tableSort.dir, tablePage, filesPerPage);
+        fileCollections = collections.collections;
+        tablePagesTotal = Math.ceil(collections.total / filesPerPage);
+
+        if(fileCollections.error != null) {
+            pageError = fileCollections.error;
+        }
 
         loading = false;
-    });
+    }
 
 </script>
 
 <!-- Upload File Modal -->
 
-<FileUploadModal bind:showUploadModal on:uploadFinished={async () => {fileCollections = await fetchFileCollections();}}></FileUploadModal>
+<FileUploadModal bind:showUploadModal on:uploadFinished={async () => {await fetchTableData();}}></FileUploadModal>
 
 <!-- File List -->
 
@@ -74,69 +88,87 @@
 </div>
 
 <div>
-    <div class="overflow-x-auto w-full">
-        <table class="table">
-          <!-- head -->
-          <thead>
-            <tr>
-                {#each tableCategorys as category}
-                    <th class="whitespace-nowrap" on:click={() => {changeSort(category)}}>{category.title} 
-                        {#if tableSort.category == category.title}
-                            <img src="/icon/arrow_down.svg" class="{tableSort.dir}" alt="arrow">
-                        {:else}
-                            <img src="/icon/arrow_down.svg" class="opacity-0" alt="arrow">
-                        {/if}
-                    </th>
-               {/each} 
+    {#if pageError != null}
+        <p>Error: {pageError}</p>
+    {/if}
 
-                <th>Actions</th>
-            </tr>
-          </thead>
+    {#if pageError == null}
+        <div class="overflow-x-auto w-full">
+            <table class="table">
+            <!-- head -->
+            <thead>
+                <tr>
+                    {#each tableCategorys as category}
+                        <th class="whitespace-nowrap" on:click={() => {changeSort(category)}}>{category.title} 
+                            {#if tableSort.category == category.field}
+                                <img src="/icon/arrow_down.svg" class="{tableSort.dir}" alt="arrow">
+                            {:else}
+                                <img src="/icon/arrow_down.svg" class="opacity-0" alt="arrow">
+                            {/if}
+                        </th>
+                {/each} 
 
-          <tbody>
-            {#each fileCollections as collection, i}
-                <tr class="bg-base-200">
-                    <td class="whitespace-nowrap">{collection.title}
-                        {#if collection.password != "" }
-                            <img class="h-4 inline ml-2" src="/icon/lock.svg" alt="">
-                        {/if}
-                    </td>
-                    <td>{collection.totalFiles}</td>
-                    <td class="whitespace-nowrap">{formatBytes(collection.totalSize)}</td>
-                    <td>{collection.downloads}/{collection.max_downloads}</td>
-                    <td>
-                        {#if collection.uploaded_by != null}
-                            {collection.uploaded_by.username}
-                        {/if}
-                    </td>
-                    <td>{formatDate(collection.uploaded_at)}</td>
-                    <td>{formatDate(collection.save_until)}</td>
-                    <td class="flex flex-nowrap gap-1">
-                        <a class="btn btn-secondary btn-sm p-0 aspect-square" href="{base}/?q={collection.collection_id}">
-                            <img src="{base}/icon/link.svg" alt="">   
-                        </a>
-                        <!-- <button class="btn btn-secondary btn-sm p-0 aspect-square">
-                            <img src="/icons/edit.svg" alt="">   
-                        </button> -->
-                        <button class="btn btn-error btn-sm p-0 aspect-square" on:click={async () => {
-                                await deleteFileCollections(collection.collection_id);
-                                fileCollections = await fetchFileCollections();
-                            }}>
-                            <img src="{base}/icon/delete.svg" alt="">   
-                        </button>
-                    </td>
+                    <th>Actions</th>
                 </tr>
-                <br>
-            {/each}
-          </tbody>
-        </table>
+            </thead>
 
-        {#if loading}
-            <div class="w-full flex justify-center items-center h-full">
-                <span class="loading loading-dots loading-lg"></span>
-            </div>
-        {/if}   
-    </div>
+            <tbody>
+                {#each fileCollections as collection, i}
+                    <tr class="bg-base-200">
+                        <td class="whitespace-nowrap">{collection.title}
+                            {#if collection.password != "" }
+                                <img class="h-4 inline ml-2" src="/icon/lock.svg" alt="">
+                            {/if}
+                        </td>
+                        <td>{collection.totalFiles}</td>
+                        <td class="whitespace-nowrap">{formatBytes(collection.totalSize)}</td>
+                        <td>{collection.downloads}/{collection.max_downloads}</td>
+                        <td>
+                            {#if collection.uploaded_by != null}
+                                {collection.uploaded_by.username}
+                            {/if}
+                        </td>
+                        <td>{formatDate(collection.uploaded_at)}</td>
+                        <td>{formatDate(collection.save_until)}</td>
+                        <td class="flex flex-nowrap gap-1">
+                            <a class="btn btn-secondary btn-sm p-0 aspect-square" href="{base}/?q={collection.collection_id}">
+                                <img src="{base}/icon/link.svg" alt="">   
+                            </a>
+                            <!-- <button class="btn btn-secondary btn-sm p-0 aspect-square">
+                                <img src="/icons/edit.svg" alt="">   
+                            </button> -->
+                            <button class="btn btn-error btn-sm p-0 aspect-square" on:click={async () => {
+                                    await deleteFileCollections(collection.collection_id);
+                                    await fetchTableData();
+                                }}>
+                                <img src="{base}/icon/delete.svg" alt="">   
+                            </button>
+                        </td>
+                    </tr>
+                    <br>
+                {/each}
+            </tbody>
+            </table>
+
+            {#if loading}
+                <div class="w-full flex justify-center items-center h-full">
+                    <span class="loading loading-dots loading-lg"></span>
+                </div>
+            {/if}   
+        </div>
+
+        <div class="flex gap-2 justify-center">
+            {#each new Array(tablePagesTotal) as _, i}
+                <button 
+                    on:click={async () => {
+                        tablePage = i + 1;
+                        await fetchTableData();
+                    }} class="btn btn-sm {tablePage == (i + 1) ? 'btn-accent' : ''}">
+                    {i + 1}
+                </button>
+            {/each}
+        </div>
+    {/if} 
 </div>
 
 <style>
