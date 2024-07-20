@@ -179,8 +179,9 @@
 
         <!-- FINISHED -->
         {#if currentView == "FINISHED"}
-            <div class="flex gap-8 h-ful absolute top-0 left-0 w-full h-full z-10 items-center justify-center">
-               <h3 class="font-bold text-4xl">Upload Finished</h3>
+            <div class="gap-8 h-ful absolute top-0 left-0 w-full h-full z-10 flex items-center justify-center">
+                <img class="w-12" src="/icon/upload_finished.svg" alt="">
+                <h3 class="font-bold text-4xl">Upload Finished</h3>
             </div>
         {/if}
 

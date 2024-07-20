@@ -2,7 +2,7 @@
     import { goto } from '$app/navigation';
 	import { onMount } from "svelte";
     import { getOption, setOption } from "$lib/api.js";
-    import { messages } from "$lib/stores.js"; 
+    import { addMessage } from "$lib/stores.js"; 
 
     let pageError = "";
 
@@ -22,17 +22,22 @@
     }
 
     async function saveOptions() {
+        let success = true;
+
         for(let option in options) {
-            await setOption(option, options[option]);
+            let result = await setOption(option, options[option]);
+            if(result.error != null) {
+                console.log("error while setting option: " + name);
+                success = false;
+            }
         }
 
-        console.log("Options Saved");
-        messages.update(val => {
-            return [...val, {
-                type: "success",
-                message: "Options saved!"
-            }]
-        })
+        if(success) {
+            addMessage("Options saved!", "success");        
+        } else {
+            addMessage("Error while saving options!", "error");        
+        }
+
         fetchOptions();
     }
 

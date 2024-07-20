@@ -158,6 +158,8 @@
         </div>
 
         <div class="flex gap-2 justify-center">
+            
+
             {#each new Array(tablePagesTotal) as _, i}
                 <button 
                     on:click={async () => {

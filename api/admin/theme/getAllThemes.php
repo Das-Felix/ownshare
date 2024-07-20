@@ -12,7 +12,6 @@ if(!isset($_COOKIE["session_token"])) {
 }
 
 $token = $_COOKIE["session_token"];
-
 $user = $auth->getUserFromSessionToken($token);
 
 if($user == null) {
@@ -21,25 +20,26 @@ if($user == null) {
 }
 
 if($user["role"] != "admin") {
-    
-    $stmt = $db->prepare("SELECT * from users WHERE id = ?");
-    $stmt->bind_param("s", $user["id"]);
-    $stmt->execute();
-    $users = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-
-    $json_users = json_encode($users);
-
-    echo $json_users;
-
+    echo '{"error": "Unautorized User!"}';
     exit();
 }
 
-$stmt = $db->prepare("SELECT * from users ORDER BY id ASC");
-$stmt->execute();
-$users = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+$dir = ROOT_DIR . "/" . APP_THEME_FOLDER;
+$folders = scandir($dir);
+$themes = [];
 
-$json_users = json_encode($users);
+foreach($folders as $folder) {
+    if($folder == "." || $folder == "..") {
+        continue;
+    }
 
-echo $json_users;
+    $folderPath = $dir . DIRECTORY_SEPARATOR . $folder;
+    if(is_dir($folderPath)) {
+        array_push($themes, $folder);
+    }
+}
+
+$json_themes = json_encode($themes);
+echo $json_themes;
 
 exit();

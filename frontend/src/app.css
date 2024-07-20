@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@import url("/fonts/red_hat_display/stylesheet.css");
+
+body {
+    font-family: "Red Hat Display";
+}

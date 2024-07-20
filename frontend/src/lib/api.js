@@ -1,4 +1,5 @@
 import { base } from '$app/paths'
+import { addMessage } from "$lib/stores.js";
 
 export async function getConfig() {
     let response = await fetch(base + "/config.json");
@@ -22,7 +23,7 @@ export async function getOption(option) {
 
     if(result.error != null) {
         console.log("error while fetching option: " + option);
-        console.log(result.error)
+        addMessage(result.error, "error");
         return "";
     }
     return result.value;
@@ -42,12 +43,7 @@ export async function setOption(name, value) {
     });
 
     let result = await response.json();
-
-    if(result.error != null) {
-        console.log("error while setting option: " + name);
-        pageError += result.error + ";";
-        return "";
-    }
+    return result;
 }
 
 
@@ -165,3 +161,53 @@ export async function deleteUser(id) {
 
 
 // Theme
+
+export async function getCurrentTheme() {
+    let cfg = await getConfig();
+
+    let response = await fetch(cfg.backendAddress + "/public/getCurrentTheme.php");
+    let json = await response.json();
+    return json;
+}
+
+export async function getAllThemes() {
+    let cfg = await getConfig();
+
+    let response = await fetch(cfg.backendAddress + "/admin/theme/getAllThemes.php", {
+        method: "GET",
+        credentials: "include",
+    });
+    let json = await response.json();
+    return json;
+}
+
+export async function setTheme(themeName) {
+    let cfg = await getConfig();   
+
+    let fd = new FormData();
+    fd.set("theme", themeName);
+
+    let response = await fetch(cfg.backendAddress + "/admin/theme/setTheme.php", {
+        method: "POST",
+        credentials: "include",
+        body: fd
+    });
+    let json = await response.json();
+    return json;
+}
+
+export async function setThemeConfig(themeName, themeConfig) {
+    let cfg = await getConfig();   
+
+    let fd = new FormData();
+    fd.set("theme", themeName);
+    fd.set("config", JSON.stringify(themeConfig));
+
+    let response = await fetch(cfg.backendAddress + "/admin/theme/setThemeConfig.php", {
+        method: "POST",
+        credentials: "include",
+        body: fd
+    });
+    let json = await response.json();
+    return json;
+}

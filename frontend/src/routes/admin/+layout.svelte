@@ -35,8 +35,12 @@
 </script>
 
 <div class="toast toast-end">
+    <div class="alert-error"></div>
+    <div class="alert-info"></div>
+    <div class="alert-success"></div>
+
     {#each $messages as msg, i}
-        <div class="alert alert-{msg.type}">
+        <div class="alert alert-{msg.type} flex justify-between">
             <span>{msg.message}</span>
             <button class="btn btn-circle btn-ghost btn-xs" on:click={() => {
                 messages.update(val => {
@@ -64,6 +68,9 @@
                 </li>
                 <li>
                     <a href="{base}/admin/settings"><img src="{base}/icon/settings.svg" alt="">Settings</a>
+                </li>
+                <li>
+                    <a href="{base}/admin/theme"><img src="{base}/icon/theme.svg" alt="">Theme</a>
                 </li>
             </ul>
         </div>
