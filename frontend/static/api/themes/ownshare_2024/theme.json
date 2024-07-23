@@ -1,0 +1,17 @@
+{
+    "title": "OwnShare 2024",
+    "description": "OwnShare default theme. Lorem ipsum dolor sit amet consectetur adipisicing elit. Assumenda iusto quod est voluptatem cum vitae tempora explicabo.",
+    "author": "Felix Raffelsberger",
+    "variables": [
+        {
+            "name": "color-theme",
+            "title": "Color Theme",
+            "type": "select",
+            "options": [
+                "dark",
+                "light"
+            ],
+            "value": "light"
+        }
+    ]
+}

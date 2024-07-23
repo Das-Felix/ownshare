@@ -30,8 +30,15 @@ if(!isset($_GET["sortField"]) || !isset($_GET["sortDir"])) {
     exit();
 }
 
+if(!isset($_GET["page"]) || !isset($_GET["perPage"])) {
+    echo '{"error": "page or perPage not set"}';
+    exit();
+}
+
 $sortField = $_GET["sortField"];
 $sortDir = $_GET["sortDir"];
+$page = (int)$_GET["page"];
+$perPage = (int)$_GET["perPage"];
 
 if($sortDir != "ASC" && $sortDir != "DESC") {
     $sortDir = "DESC";
@@ -41,7 +48,23 @@ if($sortField != "title" && $sortField != "totalFiles" && $sortField != "totalSi
     $sortField = "title";
 }
 
-$stmt = $db->prepare("SELECT * from file_collections ORDER BY " . $sortField . " " . $sortDir);
+$stmt = $db->prepare("SELECT count(1) FROM file_collections");
+$stmt->execute();
+$collectionsTotal = $stmt->get_result()->fetch_all(MYSQLI_ASSOC)[0]["count(1)"];
+
+$offset = ($page - 1) * $perPage;
+
+if($offset >= $collectionsTotal) {
+    if($collectionsTotal == 0) {
+        echo '{"collections": [], "total": 0}';
+        exit();
+    }
+
+    echo '{"error": "page out of range!"}';
+    exit();
+}
+
+$stmt = $db->prepare("SELECT * from file_collections ORDER BY $sortField $sortDir LIMIT $perPage OFFSET $offset");
 $stmt->execute();
 $collections = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
@@ -60,7 +83,12 @@ for($i = 0; $i < count($collections); $i++) {
     $collections[$i]["uploaded_by"] = $user;
 }
 
-$json_collections = json_encode($collections);
+$response = [];
+
+$response["collections"] = $collections;
+$response["total"] = $collectionsTotal;
+
+$json_collections = json_encode($response);
 
 echo $json_collections;
 

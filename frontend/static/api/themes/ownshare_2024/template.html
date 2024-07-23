@@ -1,14 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ collection.title }}</title>
-</head>
-<body>
-    <main>
-        <div class="download-card">
+<title>{{ collection.title }}</title>
 
+<div class="download-page {{theme.config.variables.color-theme}}">
+    <div class="download-card">
             {{#if collection.error}}
                 {{#if collection.password_prompt }}
                     <h1>This collection is locked!</h1>
@@ -42,7 +35,7 @@
                             <section>
                                 <span class="filesize">{{formatedSize}}</span>
                                 <span class="download-icon">
-                                    <img src="./theme/icon.svg" alt="">
+                                    <img src="/api/themes/ownshare_2024/assets/icon_{{../theme.config.variables.color-theme}}.svg" alt="">
                                 </span>
                             </section>  
                         </a>
@@ -55,5 +48,4 @@
             {{/if}}
         </div>
     </main>
-</body>
-</html>
+</div>

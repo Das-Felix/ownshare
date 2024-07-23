@@ -1,21 +1,31 @@
-@import url("./red_hat_display/stylesheet.css");
+@import url("assets/red_hat_display/stylesheet.css");
 
-:root {
-    --color-gray-bg: #d8dee9;
-    --color-gray-light: #e5e9f0;
-}
+.download-page {
+    --color-bg: #d8dee9;
+    --color-modal: #e5e9f0;
+    --text-color: black;
+    --text-color-shade: #727883;
 
-body {
     width: 100%;
     height: 100vh;
 
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: var(--color-gray-bg);
+    background-color: var(--color-bg);
     color: #2e3440;
     font-family: "Red Hat Display";
+    color: var(--text-color);
 }
+
+.download-page.dark {
+    --color-bg: #171717;
+    --color-modal: #2c2c2c;
+    --text-color: rgb(255, 255, 255);
+    --text-color-shade: #b8b9bc;
+}
+
+
 
 h1 {
     text-align: center;
@@ -28,7 +38,7 @@ header {
 }
 
 .download-card {
-    background-color: var(--color-gray-light);
+    background-color: var(--color-modal);
     padding: 2rem;
     border-radius: 1rem;
     width: calc(100vw - 6rem);
@@ -62,7 +72,7 @@ header {
 }
 
 .download-card .index {
-    color: #727883;
+    color: var(--text-color-shade);
 }
 
 .download-card .filename {
@@ -76,7 +86,7 @@ header {
 
 .download-card .filesize {
     text-wrap: nowrap;
-    color: #727883;
+    color: var(--text-color-shade);
 }
 
 .download-card .download-icon img {
@@ -114,6 +124,10 @@ header {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.download-page.dark .button {
+    background-color: (--color-bg);
 }
 
 

@@ -21,7 +21,16 @@ if($user == null) {
 }
 
 if($user["role"] != "admin") {
-    echo '{"error": "Unautorized User!"}';
+    
+    $stmt = $db->prepare("SELECT * from users WHERE id = ?");
+    $stmt->bind_param("s", $user["id"]);
+    $stmt->execute();
+    $users = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+
+    $json_users = json_encode($users);
+
+    echo $json_users;
+
     exit();
 }
 

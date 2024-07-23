@@ -43,11 +43,15 @@ class Options {
     }
 
     public function setDefaultOptions() {
+        //fileupload options
         $this->setOptionIfNotExists("files_upload_folder_location", "/uploads");
         $this->setOptionIfNotExists("files_default_save_time", "30");
         $this->setOptionIfNotExists("files_default_max_downloads", "100");
         $this->setOptionIfNotExists("files_id_length", "8");
         $this->setOptionIfNotExists("files_upload_chunk_size", "40000");
+
+        //theme options
+        $this->setOptionIfNotExists("themes_current_theme", "ownshare_2024");
     }
 
 }

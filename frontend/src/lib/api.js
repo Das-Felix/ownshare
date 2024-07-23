@@ -1,10 +1,14 @@
 import { base } from '$app/paths'
+import { addMessage } from "$lib/stores.js";
 
 export async function getConfig() {
     let response = await fetch(base + "/config.json");
     let result = await response.json();
     return result;
 }
+
+
+// OPTIONS
 
 export async function getOption(option) {
     const cfg = await getConfig();
@@ -19,7 +23,7 @@ export async function getOption(option) {
 
     if(result.error != null) {
         console.log("error while fetching option: " + option);
-        console.log(result.error)
+        addMessage(result.error, "error");
         return "";
     }
     return result.value;
@@ -39,13 +43,13 @@ export async function setOption(name, value) {
     });
 
     let result = await response.json();
-
-    if(result.error != null) {
-        console.log("error while setting option: " + name);
-        pageError += result.error + ";";
-        return "";
-    }
+    return result;
 }
+
+
+
+
+// FILE COLLECTION MANAGEMENT
 
 export async function fetchFileCollection(id, password) {
     const cfg = await getConfig();
@@ -55,7 +59,7 @@ export async function fetchFileCollection(id, password) {
         password = "";
     }
 
-    let result = await fetch(backendAddress + "/getCollection.php?collectionId=" + id + "&password=" + password, {
+    let result = await fetch(backendAddress + "/public/getCollection.php?collectionId=" + id + "&password=" + password, {
         method: "GET",
         credentials: "include",
     });
@@ -64,14 +68,14 @@ export async function fetchFileCollection(id, password) {
     return collections;
 }
 
-export async function fetchFileCollections(sortField, sortDir) {
+export async function fetchFileCollections(sortField, sortDir, page, perPage) {
     const cfg = await getConfig();
     const backendAddress = cfg.backendAddress;
 
     if(sortField == null) sortField = "id";
     if(sortDir == null) sortDir = "ASC";
 
-    let result = await fetch(backendAddress + "/admin/files/getCollections.php?sortField=" + sortField + "&sortDir=" + sortDir, {
+    let result = await fetch(backendAddress + "/admin/files/getCollections.php?sortField=" + sortField + "&sortDir=" + sortDir + "&page=" + page + "&perPage=" + perPage, {
         method: "GET",
         credentials: "include"
     });
@@ -96,6 +100,11 @@ export async function deleteFileCollections(id) {
     let result = await response.json();
     return result;
 }
+
+
+
+
+// USER MANAGEMENT
 
 export async function fetchUsers() {
     const cfg = await getConfig();
@@ -148,3 +157,57 @@ export async function deleteUser(id) {
     console.log(result);
     return JSON.parse(result);
 } 
+
+
+
+// Theme
+
+export async function getCurrentTheme() {
+    let cfg = await getConfig();
+
+    let response = await fetch(cfg.backendAddress + "/public/getCurrentTheme.php");
+    let json = await response.json();
+    return json;
+}
+
+export async function getAllThemes() {
+    let cfg = await getConfig();
+
+    let response = await fetch(cfg.backendAddress + "/admin/theme/getAllThemes.php", {
+        method: "GET",
+        credentials: "include",
+    });
+    let json = await response.json();
+    return json;
+}
+
+export async function setTheme(themeName) {
+    let cfg = await getConfig();   
+
+    let fd = new FormData();
+    fd.set("theme", themeName);
+
+    let response = await fetch(cfg.backendAddress + "/admin/theme/setTheme.php", {
+        method: "POST",
+        credentials: "include",
+        body: fd
+    });
+    let json = await response.json();
+    return json;
+}
+
+export async function setThemeConfig(themeName, themeConfig) {
+    let cfg = await getConfig();   
+
+    let fd = new FormData();
+    fd.set("theme", themeName);
+    fd.set("config", JSON.stringify(themeConfig));
+
+    let response = await fetch(cfg.backendAddress + "/admin/theme/setThemeConfig.php", {
+        method: "POST",
+        credentials: "include",
+        body: fd
+    });
+    let json = await response.json();
+    return json;
+}
