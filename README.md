@@ -4,6 +4,8 @@
 
 OwnShare is an open-source filesharing software that can be used as a direct alternative to services like wetransfer or workupload. It used PHP as its backend and static HTML as its frontend so that it can be deployed anywhere. The frontend is built using SvelteKit and build using its static adapter.
 
+![ownshare_features](https://github.com/user-attachments/assets/aa898b03-ee8b-49ce-91b1-80483c9b27a8)
+
 ## Features
 * creating File Collections and uploading Files
 * sharing File Collections with a link
