@@ -141,7 +141,11 @@
                         <h1 class="text-3xl font-bold">OwnShare Setup</h1>
                         <h2 class="text-1xl font-bold">Thanks for using OwnShare!</h2>
                         <br>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores ipsam dolorum quod beatae laborum. Quo praesentium dolor quod vitae, fugiat fuga saepe qui iure nemo sint nostrum quasi rerum veniam!</p>
+                        <p>
+                            Welcome to the OwnShare installer! 
+                            <br> Just follow the following setup steps to finish your OwnShare Install. 
+                            <br><br> If you have any questions or problems, lookup the documentation or write a github issue! 
+                            <br><a class="link" href="https://github.com/Das-Felix/ownshare">github.com/Das-Felix/ownshare</a></p>
                     </div>
     
                     <div class="mt-8">
