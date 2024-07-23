@@ -55,6 +55,11 @@ $collectionsTotal = $stmt->get_result()->fetch_all(MYSQLI_ASSOC)[0]["count(1)"];
 $offset = ($page - 1) * $perPage;
 
 if($offset >= $collectionsTotal) {
+    if($collectionsTotal == 0) {
+        echo '{"collections": [], "total": 0}';
+        exit();
+    }
+
     echo '{"error": "page out of range!"}';
     exit();
 }
