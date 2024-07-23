@@ -51,6 +51,7 @@ define("APP_DB_HOST", "${DB_HOST}");
 define("APP_DB_NAME", "${DB_NAME}");
 define("APP_DB_USER", "${DB_USER}");
 define("APP_DB_PASSWORD", "${DB_PASSWORD}");
+define("APP_THEME_FOLDER", "/themes");
 ?>
 EOF
 )
