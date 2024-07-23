@@ -6,6 +6,8 @@ OwnShare is an open-source filesharing software that can be used as a direct alt
 
 If you have an issue, found a bug or have an idea for a new feature, please open a github issue with the corresponding label!
 
+![ownshare_features](https://github.com/user-attachments/assets/aa898b03-ee8b-49ce-91b1-80483c9b27a8)
+
 ## Features
 * sharing file collections
 * password protected collections
