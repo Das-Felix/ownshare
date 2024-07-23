@@ -10,6 +10,7 @@ include_once("includes/classes/Upload.php");
 header("Access-Control-Allow-Origin: " . APP_CORS_URLS);
 header("Access-Control-Allow-Headers: " . APP_CORS_URLS);
 header("Access-Control-Allow-Credentials: true");
+header("Content-Type: application/json");
 
 define("ROOT_DIR", dirname(__FILE__));
 

@@ -15,7 +15,7 @@
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;    
         "); 
 
-        if ($stmt->execute()) {} else { echo '{"error": "' . $stmt->error . "'}"; exit(); } 
+        if ($stmt->execute()) {} else { return $stmt->error(); } 
 
         //User Permissions
 
@@ -27,7 +27,7 @@
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;    
         "); 
 
-        if ($stmt->execute()) {} else { echo '{"error": "' . $stmt->error . "'}"; exit(); } 
+        if ($stmt->execute()) {} else { return $stmt->error(); } 
 
         //Sessions
         $stmt = $mysqli->prepare("
@@ -41,7 +41,7 @@
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;    
         "); 
 
-        if ($stmt->execute()) {} else { echo '{"error": "' . $stmt->error . "'}"; exit();  } 
+        if ($stmt->execute()) {} else { return $stmt->error(); } 
 
         //Options
 
@@ -54,7 +54,7 @@
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;    
         "); 
 
-        if ($stmt->execute()) {} else { echo '{"error": "' . $stmt->error . "'}"; exit();  } 
+        if ($stmt->execute()) {} else { return $stmt->error(); } 
 
         //File Collections
         $stmt = $mysqli->prepare("
@@ -76,7 +76,7 @@
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;    
         "); 
 
-        if ($stmt->execute()) {} else { echo '{"error": "' . $stmt->error . "'}"; exit();  } 
+        if ($stmt->execute()) {} else { return $stmt->error(); } 
 
         //File Registry
         $stmt = $mysqli->prepare("
@@ -90,8 +90,9 @@
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;    
         "); 
 
-        if ($stmt->execute()) {} else { echo '{"error": "' . $stmt->error . "'}"; exit();  } 
+        if ($stmt->execute()) {} else { return $stmt->error(); } 
 
         // Close the connection 
         $stmt->close();
+        return "";
     }
