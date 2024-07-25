@@ -87,6 +87,7 @@ foreach ($requiredFiles as $requiredFile) {
 }
 
 echo '{"message": "Theme uploaded successfully!"}';
+trackAction("admin/uploadTheme");
 exit();
 
 function cleanUp($dir) {
@@ -103,4 +104,5 @@ function cleanUp($dir) {
         rmdir($dir);
     }
 }
+
 ?>

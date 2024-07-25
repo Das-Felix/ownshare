@@ -33,4 +33,5 @@ $stmt->execute();
 
 
 echo '{"message": "user deleted successfully!"}';
+trackAction("admin/deleteUser");
 exit();

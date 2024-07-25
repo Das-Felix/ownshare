@@ -73,4 +73,6 @@ $zip->close();
 
 echo '{"message": "upload finished successfully!"}';
 
+trackAction("admin/finishUpload");
+
 exit();

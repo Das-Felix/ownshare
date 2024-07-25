@@ -116,6 +116,8 @@
             } catch(Exception $e) {
                 echo '{"error": "error while completing last setup step!"}';
             }
+
+            trackAction("finishSetup");
     }
 
     function updateLineInFile($filePath, $newLineContent, $lineNumber) {
