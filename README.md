@@ -18,6 +18,10 @@ If you have an issue, found a bug or have an idea for a new feature, please open
 * theme management and customization
 * More info: https://github.com/Das-Felix/ownshare/wiki
 
+## Requirements
+* PHP Environemtn (at least 8.0)
+* MYSQL Database
+
 ## Documentation
 If you want to, Install OwnShare, Create a custom OwnShare Theme or find more information. Read the documentation<br>
 https://github.com/Das-Felix/ownshare/wiki
