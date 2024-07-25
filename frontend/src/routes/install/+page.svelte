@@ -10,6 +10,8 @@
     let setupStep = 0;
     let setupActive = true;
 
+    let tosAccepted = false;
+
     let dbHost = "";
     let dbName = "";
     let dbUser = "";
@@ -146,10 +148,14 @@
                             <br> Just follow the following setup steps to finish your OwnShare Install. 
                             <br><br> If you have any questions or problems, lookup the documentation or write a github issue! 
                             <br><a class="link" href="https://github.com/Das-Felix/ownshare">github.com/Das-Felix/ownshare</a></p>
+
+                            <br><br>
+                            <label for="accept-tos">I accept the <a class="link" href="https://ownshare.org/nutzungsbedingungen">Terms and Conditions of OwnShare</a></label> 
+                            <input class="ml-2" name="accept-tos" type="checkbox" bind:checked={tosAccepted}>
                     </div>
     
                     <div class="mt-8">
-                        <button class="btn btn-primary" on:click={startSetup}>Start Setup</button>
+                        <button class="btn btn-primary {tosAccepted ? '' : 'btn-disabled'}" on:click={startSetup}>Start Setup</button>
                     </div>
                 </div>
 

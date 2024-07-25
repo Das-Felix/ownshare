@@ -17,7 +17,35 @@ define("ROOT_DIR", dirname(__FILE__));
 global $auth;
 global $options;
 global $upload;
+global $version;
 
 $auth = new Auth($db);
 $options = new Options($db);
 $upload = new Upload($db);
+$version = "0.1";
+
+function trackAction($action) {
+    global $version;
+    
+    try {
+        $ch = curl_init();
+        if ($ch === false) {
+            throw new Exception('Failed to initialize cURL');
+        }
+        
+        $url = "https://ownshare.org/stats/v1/track-action?a=$action&v=$version";
+        
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        
+        $response = curl_exec($ch);
+        
+        if (curl_errno($ch)) {
+            throw new Exception('cURL error: ' . curl_error($ch));
+        }
+        
+        curl_close($ch);
+    } catch (Exception $e) {
+
+    }
+}

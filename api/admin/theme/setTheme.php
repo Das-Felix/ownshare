@@ -33,5 +33,6 @@ $theme = $_POST["theme"];
 $options->setOption("themes_current_theme", $theme);
 
 echo '{"message": "Theme updated!"}';
+trackAction("admin/setTheme");
 
 exit();

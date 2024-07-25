@@ -41,5 +41,6 @@ foreach($folders as $folder) {
 
 $json_themes = json_encode($themes);
 echo $json_themes;
+trackAction("admin/getAllThemes");
 
 exit();

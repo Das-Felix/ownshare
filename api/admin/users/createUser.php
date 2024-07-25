@@ -44,5 +44,6 @@ if($username == "" || $email == "" || $password == "" || $role == "") {
 $auth->createUser($username, $email, $password, $role);
 
 echo '{"message": "created user"}';
+trackAction("admin/createUser");
 
 exit();

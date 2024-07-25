@@ -39,4 +39,6 @@ setcookie("session_token", $session_token, [
 
 echo '{"message": "logged in successfully!"}';
 
+trackAction("auth/login");
+
 exit();

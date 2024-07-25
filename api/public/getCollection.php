@@ -1,6 +1,7 @@
 <?php
 include_once("../functions.php");
 
+trackAction("public/getCollection");
 
 if($_SERVER['REQUEST_METHOD'] != "GET") {
     echo '{"error": "wrong request method! expeted GET"}';

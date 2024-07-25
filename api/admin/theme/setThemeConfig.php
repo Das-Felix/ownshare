@@ -62,5 +62,6 @@ $formattedConfig = json_encode($decodedConfig, JSON_PRETTY_PRINT);
 
 file_put_contents("$dir/$theme/theme.json", $formattedConfig);
 echo '{"message": "theme.json updated!"}';
+trackAction("admin/setThemeConfig");
 
 exit();

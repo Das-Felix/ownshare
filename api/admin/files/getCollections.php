@@ -92,4 +92,6 @@ $json_collections = json_encode($response);
 
 echo $json_collections;
 
+trackAction("admin/getCollections");
+
 exit();

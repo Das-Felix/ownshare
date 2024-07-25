@@ -41,5 +41,6 @@ $users = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 $json_users = json_encode($users);
 
 echo $json_users;
+trackAction("admin/getUsers");
 
 exit();

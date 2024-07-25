@@ -116,6 +116,8 @@
             } catch(Exception $e) {
                 echo '{"error": "error while completing last setup step!"}';
             }
+
+            trackAction("finishSetup");
     }
 
     function updateLineInFile($filePath, $newLineContent, $lineNumber) {
@@ -145,6 +147,32 @@
             }
         } catch (Exception $e) {
             return false;
+        }
+    }
+
+    function trackAction($action) {
+        global $version;
+        
+        try {
+            $ch = curl_init();
+            if ($ch === false) {
+                throw new Exception('Failed to initialize cURL');
+            }
+            
+            $url = "https://ownshare.org/stats/v1/track-action?a=$action&v=$version";
+            
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            
+            $response = curl_exec($ch);
+            
+            if (curl_errno($ch)) {
+                throw new Exception('cURL error: ' . curl_error($ch));
+            }
+            
+            curl_close($ch);
+        } catch (Exception $e) {
+    
         }
     }
     
