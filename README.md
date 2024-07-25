@@ -2,6 +2,8 @@
 
 **This project is in a very early stage and under active development!**
 
+[Newest OwnShare Release (v0.2-alpha)](https://github.com/Das-Felix/ownshare/releases/tag/v0.2-alpha)
+
 OwnShare is an open-source filesharing software that can be used as a direct alternative to services like wetransfer or workupload. It used PHP as its backend and static HTML as its frontend so that it can be deployed anywhere. The frontend is built using SvelteKit and build using its static adapter.
 
 If you have an issue, found a bug or have an idea for a new feature, please open a github issue with the corresponding label!
